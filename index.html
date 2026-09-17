@@ -1,6 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Community Risk Reduction</title>
@@ -119,82 +123,11 @@
             .title { font-size: 2.5rem; }
             .subheadings { grid-template-columns: 1fr; }
         }
-
-        /* Modal Styles - simplified */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .modal-content {
-            background-color: #fff;
-            margin: auto;
-            padding: 20px;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 1200px;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 28px;
-            cursor: pointer;
-            color: #aaa;
-        }
-
-        .close-modal:hover { color: #333; }
-
-        /* Table Styles - simplified */
-        .csv-grid {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .csv-grid th {
-            background: #1a2a6c;
+        
+        .loading-message {
             color: white;
-            font-weight: 600;
-            padding: 12px 15px;
-            text-align: left;
-        }
-
-        .csv-grid td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .csv-grid tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-
-        /* Progress Bar - simplified */
-        .progress-bar-container {
-            width: 100%;
-            height: 20px;
-            background-color: #e9ecef;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 5px;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: #28a745;
-            border-radius: 10px;
+            font-size: 1.5rem;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -202,149 +135,129 @@
     <div class="container">
         <h1 class="title">Hazelwood Fire Department<br>Fire Marshal Dashboard</h1>
         
-        <div class="subheadings">
-            <div class="subheading">
-                <a href="https://hazelwoodmo.sharepoint.com/:x:/r/sites/FirePreventionBureau/_layouts/15/Doc.aspx?sourcedoc=%7B9CDFA0B9-3A45-45FD-B450-87CE96CD24BC%7D&file=Inspection%20list.xlsx&action=default&mobileredirect=true" target="_blank">Inspections</a>
-            </div>
-            <div class="subheading">
-                <a href="https://civicgov4.com/mo_hazelwood/dashboard" target="_blank">Permits</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Investigations</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Smoke Detectors</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Violations</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Code Modifications</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Code Adoptions</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Occupancies (by type etc)</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Structures (By component etc)</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Fire Drills</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Brycer (ITM)</a>
-            </div>
-            <div class="subheading">
-                <a href="#" id="siteProgressButton">Site Progress</a>
-            </div>
+        <!-- Loading message will be shown while buttons are being loaded -->
+        <div class="loading-message" id="loadingMessage">Loading dashboard...</div>
+        
+        <!-- Buttons will be dynamically added here -->
+        <div class="subheadings" id="buttonContainer">
+            <!-- Buttons will be inserted here by JavaScript -->
         </div>
         
         <img class="emblem" src="https://github.com/sgwelsh/Media/blob/main/VeniceAI_Os8SsvW.png?raw=true" alt="Community Risk Reduction Emblem">
     </div>
 
-    <!-- Modal - simplified structure -->
-    <div id="reportsModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Website Development Progress</h2>
-            <div id="csvTableContainer">
-                <p>Loading data...</p>
-            </div>
-        </div>
-    </div>
-    
     <script>
-        // Simplified script - removed ripple effects and SharePoint access checking
-        
-        // Modal functionality
-        const modal = document.getElementById('reportsModal');
-        const modalBtn = document.getElementById('siteProgressButton');
-        const closeBtn = document.querySelector('.close-modal');
-        const tableContainer = document.getElementById('csvTableContainer');
-        
-        modalBtn.addEventListener('click', function() {
-            modal.style.display = 'block';
-            loadCSVData();
-        });
-        
-        closeBtn.addEventListener('click', function() {
-            modal.style.display = 'none';
-        });
-        
-        window.addEventListener('click', function(event) {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-        
-        // Function to load CSV data
-        function loadCSVData() {
-            tableContainer.innerHTML = '<p>Loading data...</p>';
+        // Wait for page to load
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttonContainer = document.getElementById('buttonContainer');
+            const loadingMessage = document.getElementById('loadingMessage');
             
-            // Try direct relative path first
-            fetch('Progress.csv')
-                .then(response => {
-                    if (!response.ok) throw new Error('Direct fetch failed');
-                    return response.text();
-                })
-                .then(csvData => {
-                    displayCSVData(csvData);
-                })
-                .catch(error => {
-                    // Try GitHub raw URL as fallback
-                    fetch('https://raw.githubusercontent.com/sgwelsh/hazelwood-fire-dashboard/main/Progress.csv')
-                        .then(response => {
-                            if (!response.ok) throw new Error('GitHub fetch failed');
-                            return response.text();
-                        })
-                        .then(csvData => {
-                            displayCSVData(csvData);
-                        })
-                        .catch(error => {
-                            tableContainer.innerHTML = '<p>Error loading data. Please check if Progress.csv exists.</p>';
-                        });
-                });
-        }
-        
-        // Function to display CSV data in a table
-        function displayCSVData(csvData) {
-            const rows = csvData.split('\n');
-            let tableHTML = '<table class="csv-grid">';
-            
-            rows.forEach((row, index) => {
-                if (row.trim() === '') return;
+            // Function to parse CSV line, handling quoted fields with commas
+            function parseCSVLine(line) {
+                const result = [];
+                let current = '';
+                let inQuotes = false;
                 
-                tableHTML += '<tr>';
-                const cells = row.split(',');
-                
-                cells.forEach(cell => {
-                    const cellContent = cell.trim();
-                    const tag = index === 0 ? 'th' : 'td';
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    const nextChar = line[i+1];
                     
-                    // Check for percentage and create progress bar
-                    if (cellContent.includes('%') && index > 0) {
-                        const percentage = parseInt(cellContent.replace('%', '').trim());
-                        tableHTML += `
-                            <${tag}>
-                                <div>${cellContent.replace(/%/g, '')}%</div>
-                                <div class="progress-bar-container">
-                                    <div class="progress-bar" style="width: ${percentage}%"></div>
-                                </div>
-                            </${tag}>
-                        `;
+                    if (char === '"' && inQuotes && nextChar === '"') {
+                        // Escaped quote within quoted field
+                        current += '"';
+                        i++; // Skip the next quote
+                    } else if (char === '"') {
+                        // Start or end of quoted field
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        // Field separator
+                        result.push(current.trim());
+                        current = '';
                     } else {
-                        tableHTML += `<${tag}>${cellContent}</${tag}>`;
+                        // Regular character
+                        current += char;
                     }
-                });
+                }
                 
-                tableHTML += '</tr>';
-            });
+                // Add the last field
+                result.push(current.trim());
+                return result;
+            }
             
-            tableHTML += '</table>';
-            tableContainer.innerHTML = tableHTML;
-        }
+            // Function to load buttons from CSV
+            function loadButtonsFromCSV() {
+                // Try to load from local CSV first
+                fetch('buttons.csv')
+                    .then(response => {
+                        if (!response.ok) throw new Error('Local CSV not found');
+                        return response.text();
+                    })
+                    .then(csvData => {
+                        processCSVAndCreateButtons(csvData);
+                        loadingMessage.style.display = 'none';
+                    })
+                    .catch(error => {
+                        // If local fails, try GitHub
+                        fetch('https://raw.githubusercontent.com/sgwelsh/hazelwood-fire-dashboard/main/buttons.csv')
+                            .then(response => {
+                                if (!response.ok) throw new Error('GitHub CSV not found');
+                                return response.text();
+                            })
+                            .then(csvData => {
+                                processCSVAndCreateButtons(csvData);
+                                loadingMessage.style.display = 'none';
+                            })
+                            .catch(error => {
+                                loadingMessage.textContent = 'Error loading dashboard data. Please check your CSV file.';
+                            });
+                    });
+            }
+            
+            // Function to process CSV and create buttons
+            function processCSVAndCreateButtons(csvData) {
+                // Parse CSV - each line has format: ButtonName,Hyperlink
+                const lines = csvData.split('\n');
+                
+                // Process ALL rows including the first one
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue; // Skip empty lines
+                    
+                    // Use the parseCSVLine function to handle commas in URLs
+                    const parts = parseCSVLine(line);
+                    
+                    if (parts.length < 2) continue; // Skip malformed lines
+                    
+                    const buttonName = parts[0];
+                    const buttonLink = parts[1];
+                    
+                    // Check if it's a CSV page link (ends with .html) or external link
+                    const isCSVLink = buttonLink.endsWith('.html');
+                    
+                    // Create button element
+                    const buttonDiv = document.createElement('div');
+                    buttonDiv.className = 'subheading';
+                    
+                    const buttonLinkElement = document.createElement('a');
+                    buttonLinkElement.textContent = buttonName;
+                    buttonLinkElement.href = buttonLink;
+                    
+                    if (isCSVLink) {
+                        // This is a page link, not an external resource
+                        buttonLinkElement.target = '_self';
+                    } else {
+                        // This is an external resource
+                        buttonLinkElement.target = '_blank';
+                    }
+                    
+                    buttonDiv.appendChild(buttonLinkElement);
+                    buttonContainer.appendChild(buttonDiv);
+                }
+            }
+            
+            // Start the process
+            loadButtonsFromCSV();
+        });
     </script>
 </body>
 </html>
