@@ -1,6 +1,6 @@
 {
-    "pageTitle": "Website Progress",
-    "pageHeader": "Website Progress",
+    "pageTitle": "Smoke Detector Inspection Record",
+    "pageHeader": "Smoke Detector Inspection Record",
     "tableHeaders": ["Name", "Description", "Date", "Status", "Action"],
     "rowsPerPage": 10,
     "columnWidths": ["150px", "200px", "120px", "120px", "100px"],
