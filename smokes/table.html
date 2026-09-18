@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">Smoke Detector Records</title>
+    <title id="page-title">Default Title</title>
     <style>
         /* Default styles */
         body {
@@ -118,7 +117,7 @@
     </style>
 </head>
 <body>
-    <h1 id="page-header">Smoke Detector Records</h1>
+    <h1 id="page-header">Default Header</h1>
     <div id="config-message" class="config-message" style="display: none;"></div>
     <div class="search-container">
         <input type="text" id="search-input" placeholder="Search table...">
@@ -127,7 +126,7 @@
         <table id="data-table">
             <thead id="table-head">
                 <tr>
-                    <!-- Headers will be populated from CSV -->
+                    <!-- Headers will be populated from config.json -->
                 </tr>
             </thead>
             <tbody id="table-body">
@@ -334,12 +333,9 @@
                 return;
             }
             
-            // Parse headers
-            headers = parseCSVLine(lines[0]);
-            
             // Parse data rows
             csvData = [];
-            for (let i = 1; i < lines.length; i++) {
+            for (let i = 0; i < lines.length; i++) {
                 const row = parseCSVLine(lines[i]);
                 if (row.length > 0) {
                     csvData.push(row);
@@ -349,7 +345,7 @@
             // Set initial filtered data
             filteredData = csvData;
             
-            // Create table headers
+            // Create table headers from config
             createTableHeaders();
         }
 
@@ -382,6 +378,17 @@
         function createTableHeaders() {
             const headerRow = document.getElementById('table-head').querySelector('tr');
             headerRow.innerHTML = '';
+            
+            // Use headers from config if available, otherwise use CSV headers
+            headers = config.tableHeaders || [];
+            
+            // If no headers in config, use first row of CSV data as headers
+            if (headers.length === 0 && csvData.length > 0) {
+                headers = csvData[0];
+                // Remove first row from data since it's now headers
+                csvData = csvData.slice(1);
+                filteredData = [...csvData];
+            }
             
             headers.forEach((header, index) => {
                 const th = document.createElement('th');
