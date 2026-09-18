@@ -1,6 +1,7 @@
 {
-    "pageTitle": "Smoke Detector Inspection Records",
-    "pageHeader": "Smoke Detector Inspection Records",
+    "pageTitle": "Website Progress",
+    "pageHeader": "Website Progress",
+    "tableHeaders": ["Name", "Description", "Date", "Status", "Action"],
     "rowsPerPage": 10,
     "columnWidths": ["150px", "200px", "120px", "120px", "100px"],
     "columnFormats": [
@@ -21,5 +22,5 @@
         "borderColor": "#ddd",
         "borderWidth": "1px"
     },
-    "sortableColumns": [true, true, true, true, true, true]
+    "sortableColumns": [true, true, true, true, true]
 }
