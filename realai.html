@@ -18,6 +18,27 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        .tab.active {
+            border-bottom: 2px solid #0366d6;
+            color: #0366d6;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
         .search-container {
             margin-bottom: 20px;
         }
@@ -48,38 +69,60 @@
         button:hover {
             background-color: #0256cc;
         }
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid #ddd;
-            margin-bottom: 20px;
+        .property-result {
+            border: 1px solid #ddd;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #fff;
         }
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-        }
-        .tab.active {
-            border-bottom: 2px solid #0366d6;
-            color: #0366d6;
+        .property-header {
             font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
         }
-        .tab-content {
-            display: none;
+        .property-detail {
+            margin: 8px 0;
+            display: flex;
         }
-        .tab-content.active {
-            display: block;
+        .detail-label {
+            font-weight: bold;
+            width: 150px;
+        }
+        .detail-value {
+            flex: 1;
+        }
+        .map-container {
+            width: 100%;
+            height: 400px;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
         }
         .iframe-container {
             width: 100%;
-            height: 600px;
+            height: 500px;
             border: 1px solid #ddd;
             margin-top: 20px;
+            border-radius: 5px;
+            overflow: hidden;
         }
-        .ai-note {
-            font-style: italic;
+        .loading {
             color: #666;
-            margin-top: 10px;
-            font-size: 0.9em;
+            font-style: italic;
+            margin-top: 20px;
+            padding: 10px;
+            text-align: center;
+        }
+        .no-results {
+            color: #d32f2f;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #ffebee;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -96,7 +139,7 @@
             <div class="search-container">
                 <div class="input-group">
                     <label for="property-address">Property Address:</label>
-                    <input type="text" id="property-address" placeholder="Enter property address (e.g., 123 Main St)">
+                    <input type="text" id="property-address" placeholder="Enter property address (e.g., 123 Main St, Hazelwood, MO)">
                 </div>
                 
                 <button id="search-btn">Search Property</button>
@@ -107,7 +150,6 @@
         
         <div id="ai-tab" class="tab-content">
             <p>Ask the AI assistant about properties in St. Louis County.</p>
-            <p class="ai-note">Note: You'll need to sign in with your Google account to use the AI assistant.</p>
             
             <div class="iframe-container">
                 <iframe src="https://gemini.google.com/app" width="100%" height="100%" frameborder="0"></iframe>
@@ -150,20 +192,46 @@
             }
             
             // Show loading message
-            document.getElementById('result-container').innerHTML = '<div class="loading">Loading property search...</div>';
+            document.getElementById('result-container').innerHTML = '<div class="loading">Searching for property information...</div>';
             
-            // Create an iframe with the county property search page
+            // Format the address for Google Maps
+            const formattedAddress = encodeURIComponent(address);
+            
+            // Create a map using Google Maps Embed API
+            const mapUrl = `https://www.google.com/maps/embed/v1/place?q=${formattedAddress}&key=YOUR_GOOGLE_MAPS_API_KEY`;
+            
+            // Display the property information with map
             setTimeout(() => {
                 const resultContainer = document.getElementById('result-container');
                 resultContainer.innerHTML = `
                     <div class="property-result">
-                        <div class="property-header">Property Search Results</div>
-                        <p>Below is the St. Louis County Property Search page. Enter your address in the form and click "Search" to get the actual property information.</p>
+                        <div class="property-header">Property Information</div>
+                        <div class="property-detail">
+                            <span class="detail-label">Address:</span>
+                            <span class="detail-value">${address}</span>
+                        </div>
+                        <div class="property-detail">
+                            <span class="detail-label">Source:</span>
+                            <span class="detail-value">Google Maps</span>
+                        </div>
                     </div>
-                    <div class="iframe-container">
-                        <iframe src="https://revenue.stlouisco.com/RealEstate/SearchInput.aspx" width="100%" height="100%" frameborder="0"></iframe>
+                    
+                    <div class="map-container">
+                        <iframe src="https://maps.google.com/maps?q=${formattedAddress}&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+                                width="100%" height="100%" frameborder="0" style="border:0" allowfullscreen>
+                        </iframe>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <button id="get-details-btn">Get Property Details</button>
+                        <p style="font-size: 0.8em; color: #666; margin-top: 5px;">Click to open Google Maps for more details about this property</p>
                     </div>
                 `;
+                
+                // Add event listener to the new button
+                document.getElementById('get-details-btn').addEventListener('click', function() {
+                    window.open(`https://www.google.com/maps/search/?api=1&query=${formattedAddress}`, '_blank');
+                });
             }, 1000);
         }
     </script>
