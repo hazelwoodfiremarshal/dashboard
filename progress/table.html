@@ -1,6 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+function getRepositoryUrl() {
+  // Get current page URL
+  const currentUrl = window.location.href;
+  
+  // Extract the path from the URL
+  const urlPath = window.location.pathname;
+  
+  // Derive repository URL from current path
+  const repoUrl = currentUrl.split('/').slice(0, -1).join('/');
+  
+  return repoUrl;
+}
+
+function initButton() {
+  const repoUrl = getRepositoryUrl();
+  
+  // Create button with dynamic repository URL
+  const buttonHtml = `
+    <div style="text-align: center; margin-top: 20px;">
+      <a href="${repoUrl}" target="_blank" 
+         style="display: inline-block; padding: 10px 20px; background-color: #0366d6; 
+                color: white; text-decoration: none; border-radius: 5px; 
+                font-weight: bold; text-align: center;">
+        Open Repository
+      </a>
+    </div>
+  `;
+  
+  // Insert the button after the table
+  document.getElementById('repositoryButtonContainer').innerHTML = buttonHtml;
+}
+
+// Call this function when the page loads
+window.onload = initButton;
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">Default Title</title>
@@ -47,10 +83,7 @@
     </div>
     <!-- Add this button code after the closing div -->
 <div style="text-align: center; margin-top: 20px;">
-  <a href="https://github.com/hazelwoodfiremarshal/dashboard/blob/main/progress/values.csv" target="_blank" 
-     style="display: inline-block; padding: 10px 20px; background-color: #0366d6; 
-            color: white; text-decoration: none; border-radius: 5px; 
-            font-weight: bold; text-align: center;">
+ <div id="repositoryButtonContainer"></div>
     Edit
   </a>
 </div>
