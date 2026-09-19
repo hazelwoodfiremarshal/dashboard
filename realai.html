@@ -34,6 +34,7 @@
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            margin-bottom: 10px;
         }
         button {
             background-color: #0366d6;
@@ -42,53 +43,43 @@
             padding: 10px 15px;
             border-radius: 4px;
             cursor: pointer;
+            margin-right: 10px;
         }
         button:hover {
             background-color: #0256cc;
         }
-        .property-result {
-            border: 1px solid #ddd;
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: #fff;
-        }
-        .property-header {
-            font-weight: bold;
-            font-size: 1.2em;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        .property-detail {
-            margin: 8px 0;
+        .tabs {
             display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
         }
-        .detail-label {
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        .tab.active {
+            border-bottom: 2px solid #0366d6;
+            color: #0366d6;
             font-weight: bold;
-            width: 150px;
         }
-        .detail-value {
-            flex: 1;
+        .tab-content {
+            display: none;
         }
-        .no-results {
-            color: #d32f2f;
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #ffebee;
-            border-radius: 4px;
-        }
-        .loading {
-            color: #666;
-            font-style: italic;
-            margin-top: 20px;
-            padding: 10px;
+        .tab-content.active {
+            display: block;
         }
         .iframe-container {
-            margin-top: 20px;
             width: 100%;
             height: 600px;
             border: 1px solid #ddd;
+            margin-top: 20px;
+        }
+        .ai-note {
+            font-style: italic;
+            color: #666;
+            margin-top: 10px;
+            font-size: 0.9em;
         }
     </style>
 </head>
@@ -96,19 +87,54 @@
     <div class="container">
         <h1>Property Information System</h1>
         
-        <div class="search-container">
-            <div class="input-group">
-                <label for="property-address">Property Address:</label>
-                <input type="text" id="property-address" placeholder="Enter property address (e.g., 123 Main St)">
-            </div>
-            
-            <button id="search-btn">Search Property</button>
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('property')">Property Search</div>
+            <div class="tab" onclick="switchTab('ai')">AI Assistant</div>
         </div>
         
-        <div id="result-container"></div>
+        <div id="property-tab" class="tab-content active">
+            <div class="search-container">
+                <div class="input-group">
+                    <label for="property-address">Property Address:</label>
+                    <input type="text" id="property-address" placeholder="Enter property address (e.g., 123 Main St)">
+                </div>
+                
+                <button id="search-btn">Search Property</button>
+            </div>
+            
+            <div id="result-container"></div>
+        </div>
+        
+        <div id="ai-tab" class="tab-content">
+            <p>Ask the AI assistant about properties in St. Louis County.</p>
+            <p class="ai-note">Note: You'll need to sign in with your Google account to use the AI assistant.</p>
+            
+            <div class="iframe-container">
+                <iframe src="https://gemini.google.com/app" width="100%" height="100%" frameborder="0"></iframe>
+            </div>
+        </div>
     </div>
 
     <script>
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+        
+        // Property search functionality
         document.getElementById('search-btn').addEventListener('click', searchProperty);
         document.getElementById('property-address').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
