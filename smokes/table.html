@@ -374,36 +374,33 @@
             return result;
         }
 
-        // Create table headers
-        function createTableHeaders() {
-            const headerRow = document.getElementById('table-head').querySelector('tr');
-            headerRow.innerHTML = '';
-            
-            // Use headers from config if available, otherwise use CSV headers
-            headers = config.tableHeaders || [];
-            
-            // If no headers in config, use first row of CSV data as headers
-            if (headers.length === 0 && csvData.length > 0) {
-                headers = csvData[0];
-                // Remove first row from data since it's now headers
-                csvData = csvData.slice(1);
-                filteredData = [...csvData];
-            }
-            
-            headers.forEach((header, index) => {
-                const th = document.createElement('th');
-                th.textContent = header;
-                
-                // Make sortable if enabled in config
-                if (!config.sortableColumns || config.sortableColumns[index] !== false) {
-                    th.classList.add('sortable');
-                    th.addEventListener('click', () => sortByColumn(index));
-                }
-                
-                headerRow.appendChild(th);
-            });
+      // Create table headers
+function createTableHeaders() {
+    const headerRow = document.getElementById('table-head').querySelector('tr');
+    headerRow.innerHTML = '';
+    
+    // Use headers from config if available, otherwise use CSV headers
+    headers = config.tableHeaders || [];
+    
+    // If no headers in config, use first row of CSV data as headers
+    if (headers.length === 0 && csvData.length > 0) {
+        headers = csvData.shift(); // Remove first row and use it as headers
+        filteredData = [...csvData]; // Update filteredData to match
+    }
+    
+    headers.forEach((header, index) => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        
+        // Make sortable if enabled in config
+        if (!config.sortableColumns || config.sortableColumns[index] !== false) {
+            th.classList.add('sortable');
+            th.addEventListener('click', () => sortByColumn(index));
         }
-
+        
+        headerRow.appendChild(th);
+    });
+}
         // Sort by column
         function sortByColumn(columnIndex) {
             // Update sort direction if clicking the same column
