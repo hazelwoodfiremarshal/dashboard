@@ -153,115 +153,30 @@
                 searchTerm = extractName(message);
             }
             
-            // Search for property information
-            searchProperty(searchType, searchTerm);
-        }
-        
-        async function searchProperty(searchType, searchTerm) {
-            try {
-                // Create a hidden iframe to interact with the county website
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                document.body.appendChild(iframe);
-                
-                // Wait for iframe to load
-                iframe.onload = function() {
-                    const iframeDoc = iframe.contentWindow.document;
-                    
-                    // Depending on search type, fill in the appropriate form field
-                    switch(searchType) {
-                        case 'address':
-                            iframeDoc.querySelector('#Address').value = searchTerm;
-                            break;
-                        case 'locator':
-                            iframeDoc.querySelector('#ParcelId').value = searchTerm;
-                            break;
-                        case 'subdivision':
-                            iframeDoc.querySelector('#SubdivisionName').value = searchTerm;
-                            break;
-                        case 'name':
-                            iframeDoc.querySelector('#OwnerName').value = searchTerm;
-                            break;
-                    }
-                    
-                    // Submit the form
-                    const searchButton = iframeDoc.querySelector('input[type="submit"]');
-                    if (searchButton) {
-                        searchButton.click();
-                        
-                        // Wait a bit for results to load
-                        setTimeout(() => {
-                            // Extract results from the iframe
-                            extractResults(iframeDoc, searchType, searchTerm);
-                        }, 3000);
-                    } else {
-                        handleError("Could not find search button on the county website.");
-                    }
-                };
-                
-                // Load the county website in the iframe
-                iframe.src = 'https://revenue.stlouisco.com/RealEstate/SearchInput.aspx';
-            } catch (error) {
-                handleError("Error connecting to St. Louis County property database: " + error.message);
-            }
-        }
-        
-        function extractResults(doc, searchType, searchTerm) {
-            try {
-                // Hide loading indicator
-                loading.style.display = 'none';
-                
-                // Get the results table from the county website
-                const resultsTable = doc.querySelector('#searchResults');
-                
-                if (!resultsTable || resultsTable.rows.length <= 1) {
-                    chatContainer.innerHTML += `<div class="message ai-message">Sorry, I couldn't find any properties matching "${searchTerm}". Please try a different search.</div>`;
-                    return;
-                }
-                
-                // Format results
-                let responseHTML = '<div class="message ai-message">';
-                responseHTML += `I found ${resultsTable.rows.length - 1} properties matching your search:</div>`;
-                
-                // Skip header row (row 0)
-                for (let i = 1; i < resultsTable.rows.length; i++) {
-                    const row = resultsTable.rows[i];
-                    const cells = row.cells;
-                    
-                    if (cells.length >= 5) {
-                        responseHTML += `<div class="property-result">`;
-                        responseHTML += `<div class="property-header">${cells[0].textContent.trim()}, ${cells[1].textContent.trim()}</div>`;
-                        responseHTML += `<div class="property-detail">Owner: ${cells[2].textContent.trim()}</div>`;
-                        responseHTML += `<div class="property-detail">Subdivision: ${cells[3].textContent.trim()}</div>`;
-                        responseHTML += `<div class="property-detail">Assessed Value: $${cells[4].textContent.trim()}</div>`;
-                        
-                        // Try to get additional details if there's a link
-                        const detailLink = row.querySelector('a');
-                        if (detailLink) {
-                            responseHTML += `<div class="property-detail">Property Details: <a href="#" onclick="getDetailPage('${detailLink.href}'); return false;">View Details</a></div>`;
-                        }
-                        
-                        responseHTML += `</div>`;
-                    }
-                }
-                
-                chatContainer.innerHTML += responseHTML;
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            } catch (error) {
-                handleError("Error extracting property results: " + error.message);
-            }
-        }
-        
-        function getDetailPage(detailUrl) {
-            // This function would fetch the detailed property page
-            // For now, just show a message
-            chatContainer.innerHTML += `<div class="message ai-message">Fetching detailed property information...</div>`;
-        }
-        
-        function handleError(errorMessage) {
+            // Create a direct search URL to the county website
+            const countySearchUrl = createCountySearchUrl(searchType, searchTerm);
+            
+            // Open the county website in a new tab
+            window.open(countySearchUrl, '_blank');
+            
+            // Hide loading indicator
             loading.style.display = 'none';
-            chatContainer.innerHTML += `<div class="message ai-message">Error: ${errorMessage}</div>`;
+            
+            // Let the user know we've opened the search
+            let responseHTML = `<div class="message ai-message">I've opened the St. Louis County property search with your search term "${searchTerm}" in a new tab. Please check the results there.</div>`;
+            responseHTML += `<div class="message ai-message">The county website requires direct interaction due to security restrictions. You'll need to review the results there and then return here to ask any follow-up questions.</div>`;
+            
+            chatContainer.innerHTML += responseHTML;
             chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        function createCountySearchUrl(searchType, searchTerm) {
+            // Base URL for the county property search
+            const baseUrl = 'https://revenue.stlouisco.com/RealEstate/SearchInput.aspx';
+            
+            // Return the base URL since we can't pre-fill the form due to security restrictions
+            // The user will need to manually enter the search term on the county website
+            return baseUrl;
         }
         
         // Helper functions to extract information from messages
