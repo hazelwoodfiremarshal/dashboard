@@ -78,6 +78,18 @@
             background-color: #ffebee;
             border-radius: 4px;
         }
+        .loading {
+            color: #666;
+            font-style: italic;
+            margin-top: 20px;
+            padding: 10px;
+        }
+        .iframe-container {
+            margin-top: 20px;
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ddd;
+        }
     </style>
 </head>
 <body>
@@ -104,7 +116,7 @@
             }
         });
         
-        async function searchProperty() {
+        function searchProperty() {
             const address = document.getElementById('property-address').value.trim();
             if (!address) {
                 alert('Please enter a property address');
@@ -112,128 +124,21 @@
             }
             
             // Show loading message
-            document.getElementById('result-container').innerHTML = '<div class="loading">Searching property information...</div>';
+            document.getElementById('result-container').innerHTML = '<div class="loading">Loading property search...</div>';
             
-            try {
-                // Using a real property API service (ATTOM Data API in this example)
-                const apiKey = 'YOUR_API_KEY'; // You'll need to get an API key
-                const response = await fetch(`https://api.attomdata.com/v2/property/basicprofile?address1=${encodeURIComponent(address)}&apikey=${apiKey}`);
-                
-                if (!response.ok) {
-                    throw new Error('Property not found');
-                }
-                
-                const data = await response.json();
-                displayPropertyResults(data.property);
-            } catch (error) {
-                // Fallback to simulated data if API fails
-                displayFallbackResults(address);
-            }
-        }
-        
-        function displayPropertyResults(property) {
-            const resultContainer = document.getElementById('result-container');
-            
-            const resultHTML = `
-                <div class="property-result">
-                    <div class="property-header">${property.address.line1}, ${property.address.city}, ${property.address.state} ${property.address.postalCode}</div>
-                    
-                    <div class="property-detail">
-                        <span class="detail-label">Assessor's Parcel:</span>
-                        <span class="detail-value">${property.apn || 'N/A'}</span>
+            // Create an iframe with the county property search page
+            setTimeout(() => {
+                const resultContainer = document.getElementById('result-container');
+                resultContainer.innerHTML = `
+                    <div class="property-result">
+                        <div class="property-header">Property Search Results</div>
+                        <p>Below is the St. Louis County Property Search page. Enter your address in the form and click "Search" to get the actual property information.</p>
                     </div>
-                    
-                    <div class="property-detail">
-                        <span class="detail-label">Owner:</span>
-                        <span class="detail-value">${property.owner ? property.owner[0].owner1 : 'N/A'}</span>
+                    <div class="iframe-container">
+                        <iframe src="https://revenue.stlouisco.com/RealEstate/SearchInput.aspx" width="100%" height="100%" frameborder="0"></iframe>
                     </div>
-                    
-                    <div class="property-detail">
-                        <span class="detail-label">Property Type:</span>
-                        <span class="detail-value">${property.useCode || 'N/A'}</span>
-                    </div>
-                    
-                    <div class="property-detail">
-                        <span class="detail-label">Year Built:</span>
-                        <span class="detail-value">${property.structure.yearBuilt || 'N/A'}</span>
-                    </div>
-                    
-                    <div class="property-detail">
-                        <span class="detail-label">Lot Size:</span>
-                        <span class="detail-value">${property.lot.areaSqFt ? property.lot.areaSqFt.toLocaleString() + ' sq ft' : 'N/A'}</span>
-                    </div>
-                    
-                    <div class="property-detail">
-                        <span class="detail-label">Living Area:</span>
-                        <span class="detail-value">${property.structure.livingArea ? property.structure.livingArea.toLocaleString() + ' sq ft' : 'N/A'}</span>
-                    </div>
-                    
-                    <div class="property-detail">
-                        <span class="detail-label">Bedrooms:</span>
-                        <span class="detail-value">${property.structure.bedrooms || 'N/A'}</span>
-                    </div>
-                    
-                    <div class="property-detail">
-                        <span class="detail-label">Bathrooms:</span>
-                        <span class="detail-value">${property.structure.bathrooms || 'N/A'}</span>
-                    </div>
-                    
-                    <div class="property-detail">
-                        <span class="detail-label">Assessed Value:</span>
-                        <span class="detail-value">${property.assessment.assessedAmt ? '$' + property.assessment.assessedAmt.toLocaleString() : 'N/A'}</span>
-                    </div>
-                    
-                    <div class="property-detail">
-                        <span class="detail-label">Last Sale:</span>
-                        <span class="detail-value">${property.sales ? property.sales[0].date : 'N/A'} ${property.sales ? '- $' + property.sales[0].amount.toLocaleString() : ''}</span>
-                    </div>
-                </div>
-            `;
-            
-            resultContainer.innerHTML = resultHTML;
-        }
-        
-        function displayFallbackResults(address) {
-            // Create a simulated property data structure
-            const simulatedProperty = {
-                address: {
-                    line1: address,
-                    city: "Hazelwood",
-                    state: "MO",
-                    postalCode: "63042"
-                },
-                apn: "123456789",
-                owner: [{ owner1: "Sample Owner" }],
-                useCode: "Single Family",
-                structure: {
-                    yearBuilt: 1995,
-                    livingArea: 1850,
-                    bedrooms: 3,
-                    bathrooms: 2
-                },
-                lot: {
-                    areaSqFt: 7500
-                },
-                assessment: {
-                    assessedAmt: 125000
-                },
-                sales: [{
-                    date: "2022-03-15",
-                    amount: 150000
-                }]
-            };
-            
-            // Display the fallback results
-            displayPropertyResults(simulatedProperty);
-            
-            // Add a note about data source
-            const resultContainer = document.getElementById('result-container');
-            const disclaimer = document.createElement('div');
-            disclaimer.style.marginTop = '10px';
-            disclaimer.style.fontStyle = 'italic';
-            disclaimer.style.color = '#666';
-            disclaimer.innerHTML = 'Note: This is simulated data. For accurate property information, sign up for a real estate API service like ATTOM or Homesage.ai.^1^ ^2^';
-            resultContainer.appendChild(disclaimer);
+                `;
+            }, 1000);
         }
     </script>
 </body>
