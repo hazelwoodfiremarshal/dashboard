@@ -5,115 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">Default Title</title>
     <style>
-        /* Default styles */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
-        
-        h1 {
-            margin-bottom: 20px;
-        }
-        
-        .search-container {
-            margin-bottom: 15px;
-        }
-        
-        .search-container input {
-            padding: 8px;
-            width: 300px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        
-        .table-container {
-            overflow-x: auto;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        th {
-            font-weight: bold;
-            position: relative;
-        }
-        
-        th.sortable {
-            cursor: pointer;
-        }
-        
-        th.sortable:hover {
-            background-color: #f5f5f5;
-        }
-        
-        th.sortable::after {
-            content: " ⇅";
-            opacity: 0.3;
-        }
-        
-        th.sorted-asc::after {
-            content: " ↑";
-            opacity: 1;
-        }
-        
-        th.sorted-desc::after {
-            content: " ↓";
-            opacity: 1;
-        }
-        
-        .pagination {
-            margin-top: 15px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .pagination button {
-            margin-right: 10px;
-            padding: 5px 10px;
-            background-color: #f1f1f1;
-            border: 1px solid #ddd;
-            cursor: pointer;
-        }
-        
-        .pagination button:hover {
-            background-color: #e1e1e1;
-        }
-        
-        .pagination button.active {
-            background-color: #337ab7;
-            color: white;
-        }
-        
-        .pagination button:disabled {
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
-        
-        .config-message {
-            background-color: #e2f3ff;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-        
-        .config-error {
-            background-color: #ffe2e2;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-        
-        /* Will be populated by config.json */
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; color: #333; }
+        h1 { margin-bottom: 20px; }
+        .search-container { margin-bottom: 15px; }
+        .search-container input { padding: 8px; width: 300px; border: 1px solid #ddd; border-radius: 4px; }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { font-weight: bold; position: relative; }
+        th.sortable { cursor: pointer; }
+        th.sortable:hover { background-color: #f5f5f5; }
+        th.sortable::after { content: " ⇅"; opacity: 0.3; }
+        th.sorted-asc::after { content: " ↑"; opacity: 1; }
+        th.sorted-desc::after { content: " ↓"; opacity: 1; }
+        .pagination { margin-top: 15px; display: flex; align-items: center; }
+        .pagination button { margin-right: 10px; padding: 5px 10px; background-color: #f1f1f1; border: 1px solid #ddd; cursor: pointer; }
+        .pagination button:hover { background-color: #e1e1e1; }
+        .pagination button.active { background-color: #337ab7; color: white; }
+        .pagination button:disabled { cursor: not-allowed; opacity: 0.5; }
+        .config-message { background-color: #e2f3ff; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
+        .config-error { background-color: #ffe2e2; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -126,7 +37,7 @@
         <table id="data-table">
             <thead id="table-head">
                 <tr>
-                    <!-- Headers will be populated from config.json -->
+                    <!-- Headers will be populated from CSV -->
                 </tr>
             </thead>
             <tbody id="table-body">
@@ -161,6 +72,7 @@
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
             loadConfig();
+            
             document.getElementById('rows-per-page').addEventListener('change', function() {
                 rowsPerPage = parseInt(this.value);
                 currentPage = 1;
@@ -345,7 +257,7 @@
             // Set initial filtered data
             filteredData = csvData;
             
-            // Create table headers from config
+            // Create table headers from the first row
             createTableHeaders();
         }
 
@@ -374,20 +286,15 @@
             return result;
         }
 
-        // Create table headers
+        // Create table headers from the first row of CSV
         function createTableHeaders() {
             const headerRow = document.getElementById('table-head').querySelector('tr');
             headerRow.innerHTML = '';
             
-            // Use headers from config if available, otherwise use CSV headers
-            headers = config.tableHeaders || [];
-            
-            // If no headers in config, use first row of CSV data as headers
-            if (headers.length === 0 && csvData.length > 0) {
-                headers = csvData[0];
-                // Remove first row from data since it's now headers
-                csvData = csvData.slice(1);
-                filteredData = [...csvData];
+            // Always use first row of CSV data as headers
+            if (csvData.length > 0) {
+                headers = csvData.shift(); // Remove first row and use it as headers
+                filteredData = [...csvData]; // Update filteredData to match
             }
             
             headers.forEach((header, index) => {
