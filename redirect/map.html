@@ -2,21 +2,15 @@
 <html>
 <head>
 <script>
+const isiPhone = /iPhone|iPod/.test(navigator.userAgent);
+const googleMapsLink = "https://www.google.com/maps/d/u/0/edit?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79431064409568%2C-90.38280594367822&z=13&layer=1";
+const iPhoneMapsLink = "https://maps.google.com/maps/d/u/0/edit?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79431064409568%2C-90.38280594367822&z=13&layer=1";
+
 window.onload = function() {
-  const url = "https://www.google.com/maps/d/u/0/edit?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79431064409568%2C-90.38280594367822&z=13&layer=1";
-  
-  // For iOS, try Chrome first
-  if (/iPhone|iPod|iPad/.test(navigator.userAgent)) {
-    // Try to open in Chrome
-    window.location.href = "googlechrome://" + url.substring(url.indexOf("//"));
-    
-    // Fallback to Safari after 2 seconds if Chrome doesn't open
-    setTimeout(function() {
-      window.location.href = url;
-    }, 2000);
+  if (isiPhone) {
+    window.location.href = iPhoneMapsLink;
   } else {
-    // For non-iOS devices, use original URL
-    window.location.href = url;
+    window.location.href = googleMapsLink;
   }
 };
 </script>
