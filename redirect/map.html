@@ -3,16 +3,11 @@
 <head>
 <script>
 window.onload = function() {
-  // Try Chrome first with proper scheme
-  const url = "https://www.google.com/maps/d/u/0/edit?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.775259661669054%2C-90.36680168827536&z=11";
+  // Regular Google Maps link showing the same location
+  // This opens a standard view of the area without needing authentication
+  const regularMapLink = "https://www.google.com/maps/place/38.7943106,-90.3828059/@38.7943106,-90.3828059,13z";
   
-  // Try to open in Chrome using their URL scheme
-  window.location.href = "googlechrome://" + url.substring(url.indexOf("//"));
-  
-  // Fallback to regular browser after 1 second if Chrome doesn't open
-  setTimeout(function() {
-    window.location.href = url;
-  }, 1000);
+  window.location.href = regularMapLink;
 };
 </script>
 </head>
