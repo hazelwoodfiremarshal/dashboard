@@ -2,29 +2,10 @@
 <html>
 <head>
 <script>
-// Your original Google Maps My Map link
-const originalMapLink = "https://www.google.com/maps/d/u/0/edit?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79431064409568%2C-90.38280594367822&z=13&layer=1";
-
-// Check if this is an iPhone/iPad
-const isIOS = /iPhone|iPod|iPad/.test(navigator.userAgent);
-
-// For iOS, we need to use the comgooglemapsurl:// scheme to open the Google Maps app
-// This is specifically designed to open desktop Google Maps URLs in the iOS app^6^
-const IOSMapLink = "comgooglemapsurl://" + originalMapLink.substring("https://".length);
-
-// For non-iOS devices, use the original link
 window.onload = function() {
-  if (isIOS) {
-    // Try to open in Google Maps app first
-    window.location.href = IOSMapLink;
-    
-    // Fallback - if the app doesn't open, redirect to regular link after 1 second
-    setTimeout(function() {
-      window.location.href = originalMapLink;
-    }, 1000);
-  } else {
-    window.location.href = originalMapLink;
-  }
+  // Force Chrome on iPhone using googlechromes:// scheme
+  const url = "https://www.google.com/maps/d/u/0/edit?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79431064409568%2C-90.38280594367822&z=13&layer=1";
+  window.location.href = "googlechromes://" + url;
 };
 </script>
 </head>
