@@ -2,16 +2,17 @@
 <html>
 <head>
 <script>
-const isiPhone = /iPhone|iPod/.test(navigator.userAgent);
-const googleMapsLink = "https://www.google.com/maps/d/u/0/edit?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79431064409568%2C-90.38280594367822&z=13&layer=1";
-const iPhoneMapsLink = "https://maps.google.com/maps/d/u/0/edit?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79431064409568%2C-90.38280594367822&z=13&layer=1";
-
 window.onload = function() {
-  if (isiPhone) {
-    window.location.href = iPhoneMapsLink;
-  } else {
-    window.location.href = googleMapsLink;
-  }
+  // Try Chrome first with proper scheme
+  const url = "https://www.google.com/maps/d/u/0/edit?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79431064409568%2C-90.38280594367822&z=13&layer=1";
+  
+  // Try to open in Chrome using their URL scheme
+  window.location.href = "googlechrome://" + url.substring(url.indexOf("//"));
+  
+  // Fallback to regular browser after 1 second if Chrome doesn't open
+  setTimeout(function() {
+    window.location.href = url;
+  }, 1000);
 };
 </script>
 </head>
