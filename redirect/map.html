@@ -1,38 +1,95 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Hazelwood CRR Map</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <title>Hazelwood CRR Map</title>
     <style>
-        body { margin: 0; padding: 0; }
-        #map { height: 100vh; width: 100%; }
-        .map-link {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        .card {
             background-color: white;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .map-button {
+            display: inline-block;
+            background-color: #4285f4;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 10px 0;
+            transition: background-color 0.3s;
+        }
+        .map-button:hover {
+            background-color: #3367d6;
+        }
+        .instructions {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        .fallback-link {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .fallback-link a {
+            color: #4285f4;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <div id="map"></div>
-    <div class="map-link">
-        <a href="https://www.google.com/maps/d/u/0/viewer?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79428532868614%2C-90.38280594367822&z=13" target="_blank">View Interactive Hazelwood CRR Map</a>
-    </div>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script>
-        const map = L.map('map').setView([38.79428532868614, -90.38280594367822], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    <div class="card">
+        <h1>Hazelwood CRR Map</h1>
         
-        // Add a marker at the center point
-        L.marker([38.79428532868614, -90.38280594367822]).addTo(map)
-            .bindPopup('Hazelwood CRR Map Center');
+        <a href="https://maps.google.com/maps/d/u/0/viewer?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79428532868614%2C-90.38280594367822&z=13" class="map-button" id="open-map">Open Map</a>
+        
+        <div class="instructions">
+            <p>Click the button above to open the Hazelwood CRR map in Google Maps.</p>
+            <p>If you're on an iPhone, this will open the map in the Google Maps app.</p>
+        </div>
+        
+        <div class="fallback-link">
+            <p>Having trouble? <a href="https://www.google.com/maps/d/u/0/viewer?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79428532868614%2C-90.38280594367822&z=13" target="_blank">Open in browser</a></p>
+        </div>
+    </div>
+    
+    <script>
+        // Handle the map opening
+        document.getElementById('open-map').addEventListener('click', function(e) {
+            // Try to open in Google Maps app (works on Android and some iOS setups)
+            const gmapsUrl = 'comgooglemaps://?url=https://www.google.com/maps/d/u/0/viewer?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79428532868614%2C-90.38280594367822&z=13';
+            
+            // Try to open in the app
+            setTimeout(function() {
+                window.location.href = gmapsUrl;
+            }, 100);
+            
+            // Fallback to browser URL after a short delay if app doesn't open
+            setTimeout(function() {
+                window.location.href = 'https://www.google.com/maps/d/u/0/viewer?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79428532868614%2C-90.38280594367822&z=13';
+            }, 1000);
+        });
     </script>
 </body>
 </html>
