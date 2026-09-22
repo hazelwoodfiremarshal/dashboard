@@ -3,41 +3,36 @@
 <head>
     <title>Hazelwood CRR Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
         body { margin: 0; padding: 0; }
-        .map-button {
-            display: block;
-            width: 100%;
-            padding: 20px;
-            background-color: #4285f4;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-        }
-        .instructions {
-            padding: 20px;
-            text-align: center;
-            font-family: Arial, sans-serif;
+        #map { height: 100vh; width: 100%; }
+        .map-link {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
         }
     </style>
 </head>
 <body>
-    <a href="https://www.google.com/maps/d/u/0/viewer?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79428532868614%2C-90.38280594367822&z=13" class="map-button" id="mapLink">
-        Open Hazelwood CRR Map
-    </a>
-    <div class="instructions">
-        <p>Click the button above to open the interactive map</p>
-        <p>If you're on an iPhone, the map will open in the Google Maps app</p>
+    <div id="map"></div>
+    <div class="map-link">
+        <a href="https://www.google.com/maps/d/u/0/viewer?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79428532868614%2C-90.38280594367822&z=13" target="_blank">View Interactive Hazelwood CRR Map</a>
     </div>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
-        document.getElementById('mapLink').addEventListener('click', function(e) {
-            // Add timestamp to prevent caching issues
-            this.href = 'https://www.google.com/maps/d/u/0/viewer?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79428532868614%2C-90.38280594367822&z=13&t=' + Date.now();
-        });
+        const map = L.map('map').setView([38.79428532868614, -90.38280594367822], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        
+        // Add a marker at the center point
+        L.marker([38.79428532868614, -90.38280594367822]).addTo(map)
+            .bindPopup('Hazelwood CRR Map Center');
     </script>
 </body>
 </html>
