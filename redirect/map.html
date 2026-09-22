@@ -7,29 +7,21 @@ window.onload = function() {
   
   // Check if iPhone
   if (/iPhone|iPod|iPad/.test(navigator.userAgent)) {
-    // Try to open Google Maps app in new window
-    window.open("comgooglemaps://?daddr=38.7943106,-90.3828059&center=38.7943106,-90.3828059&zoom=13", "_blank");
+    // First redirect to Google Maps main page to establish session
+    window.location.href = "https://www.google.com/maps";
     
-    // If app doesn't open, fallback to browser in new window
+    // After 2 seconds, redirect to your specific My Map
     setTimeout(function() {
-      window.open("https://www.google.com/maps/d/view?mid=" + myMapId + "&z=13", "_blank");
+      window.location.href = "https://www.google.com/maps/d/view?mid=" + myMapId + "&z=13";
     }, 2000);
   } else {
-    // For non-iPhone, open in new window
-    window.open("https://www.google.com/maps/d/u/0/edit?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79431064409568%2C-90.38280594367822&z=13&layer=1", "_blank");
+    // For non-iPhone, use the original edit link
+    window.location.href = "https://www.google.com/maps/d/u/0/edit?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79431064409568%2C-90.38280594367822&z=13&layer=1";
   }
-  
-  // Keep the redirect page from replacing the original window
-  // You could add a close button or redirect back after a delay
-  setTimeout(function() {
-    window.location.href = "../dashboard.html"; // or wherever your dashboard is
-  }, 3000);
-}
+};
 </script>
 </head>
 <body>
-<p>Opening map in new window...</p>
-<p>This page will return to your dashboard in 3 seconds.</p>
-<button onclick="window.history.back()">Go Back</button>
+<p>Redirecting to map...</p>
 </body>
 </html>
