@@ -3,28 +3,41 @@
 <head>
     <title>Hazelwood CRR Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <style>
+        body { margin: 0; padding: 0; }
+        .map-button {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            background-color: #4285f4;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+        .instructions {
+            padding: 20px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+    </style>
 </head>
 <body>
-    <div id="map" style="height: 100vh; width: 100%;"></div>
+    <a href="https://www.google.com/maps/d/u/0/viewer?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79428532868614%2C-90.38280594367822&z=13" class="map-button" id="mapLink">
+        Open Hazelwood CRR Map
+    </a>
+    <div class="instructions">
+        <p>Click the button above to open the interactive map</p>
+        <p>If you're on an iPhone, the map will open in the Google Maps app</p>
+    </div>
     <script>
-        function initMap() {
-            const map = new google.maps.Map(document.getElementById('map'), {
-                center: { lat: 38.79428532868614, lng: -90.38280594367822 },
-                zoom: 13
-            });
-
-            // Create a link element to open your My Maps directly
-            const mapLink = document.createElement('div');
-            mapLink.style.backgroundColor = '#fff';
-            mapLink.style.padding = '10px';
-            mapLink.style.fontFamily = 'Arial,sans-serif';
-            mapLink.style.fontSize = '14px';
-            mapLink.innerHTML = '<strong>Hazelwood CRR Map</strong><br>' +
-                              '<a href="https://www.google.com/maps/d/u/0/viewer?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79428532868614%2C-90.38280594367822&z=13" target="_blank">View Full Map</a>';
-            map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(mapLink);
-        }
+        document.getElementById('mapLink').addEventListener('click', function(e) {
+            // Add timestamp to prevent caching issues
+            this.href = 'https://www.google.com/maps/d/u/0/viewer?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79428532868614%2C-90.38280594367822&z=13&t=' + Date.now();
+        });
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
 </body>
 </html>
