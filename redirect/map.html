@@ -7,21 +7,21 @@ window.onload = function() {
   
   // Check if iPhone
   if (/iPhone|iPod|iPad/.test(navigator.userAgent)) {
-    // First redirect to Google homepage to establish authentication
-    window.location.href = "https://accounts.google.com/signin";
+    // First redirect to Google Maps main page to establish session
+    window.location.href = "https://www.google.com/maps";
     
-    // Then redirect to My Maps after 2 seconds
+    // After 2 seconds, redirect to your specific My Map
     setTimeout(function() {
       window.location.href = "https://www.google.com/maps/d/view?mid=" + myMapId + "&z=13";
     }, 2000);
   } else {
-    // For other devices, use the original edit link
+    // For non-iPhone, use the original edit link
     window.location.href = "https://www.google.com/maps/d/u/0/edit?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79431064409568%2C-90.38280594367822&z=13&layer=1";
   }
 };
 </script>
 </head>
 <body>
-<p>Redirecting to your map...</p>
+<p>Redirecting to map...</p>
 </body>
 </html>
