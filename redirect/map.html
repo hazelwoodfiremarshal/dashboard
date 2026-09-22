@@ -1,85 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hazelwood CRR Map</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-        header {
-            padding: 10px;
-            background-color: #f8f9fa;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
-        .iframe-container {
-            flex-grow: 1;
-            position: relative;
-        }
-        iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        .fallback {
-            padding: 20px;
-            text-align: center;
-            display: none;
-        }
-        .fallback a {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 10px 20px;
-            background-color: #4285f4;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Hazelwood CRR Map</h1>
-        </header>
-        <div class="iframe-container">
-            <iframe src="https://www.google.com/maps/d/u/0/embed?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww" allowfullscreen></iframe>
-            <div class="fallback">
-                <p>Having trouble viewing the map? Click below to open directly.</p>
-                <a href="https://www.google.com/maps/d/u/0/viewer?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79428532868614%2C-90.38280594367822&z=13" target="_blank">Open Map</a>
-            </div>
-        </div>
-    </div>
+    <div id="map" style="height: 100vh; width: 100%;"></div>
     <script>
-        // Fallback if iframe doesn't load
-        setTimeout(() => {
-            const iframe = document.querySelector('iframe');
-            const fallback = document.querySelector('.fallback');
-            
-            try {
-                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                if (iframeDoc.body.innerHTML.trim() === '') {
-                    iframe.style.display = 'none';
-                    fallback.style.display = 'block';
-                }
-            } catch (e) {
-                iframe.style.display = 'none';
-                fallback.style.display = 'block';
-            }
-        }, 5000);
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 38.79428532868614, lng: -90.38280594367822 },
+                zoom: 13
+            });
+
+            // Create a link element to open your My Maps directly
+            const mapLink = document.createElement('div');
+            mapLink.style.backgroundColor = '#fff';
+            mapLink.style.padding = '10px';
+            mapLink.style.fontFamily = 'Arial,sans-serif';
+            mapLink.style.fontSize = '14px';
+            mapLink.innerHTML = '<strong>Hazelwood CRR Map</strong><br>' +
+                              '<a href="https://www.google.com/maps/d/u/0/viewer?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79428532868614%2C-90.38280594367822&z=13" target="_blank">View Full Map</a>';
+            map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(mapLink);
+        }
     </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
 </body>
 </html>
