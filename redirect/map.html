@@ -3,13 +3,17 @@
 <head>
 <script>
 window.onload = function() {
-  // Direct My Maps link that works on iPhone
-  const myMapsLink = "https://www.google.com/maps/d/view?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&z=13";
+  const myMapId = "11ut1FGsnCIWMvHbb3IgU5ZnSynIreww";
   
   // Check if iPhone
   if (/iPhone|iPod|iPad/.test(navigator.userAgent)) {
-    // For iPhone, use the direct My Maps view URL
-    window.location.href = myMapsLink;
+    // First redirect to Google homepage to establish authentication
+    window.location.href = "https://accounts.google.com/signin";
+    
+    // Then redirect to My Maps after 2 seconds
+    setTimeout(function() {
+      window.location.href = "https://www.google.com/maps/d/view?mid=" + myMapId + "&z=13";
+    }, 2000);
   } else {
     // For other devices, use the original edit link
     window.location.href = "https://www.google.com/maps/d/u/0/edit?mid=11ut1FGsnCIWMvHbb3IgU5ZnSynIreww&ll=38.79431064409568%2C-90.38280594367822&z=13&layer=1";
@@ -18,5 +22,6 @@ window.onload = function() {
 </script>
 </head>
 <body>
+<p>Redirecting to your map...</p>
 </body>
 </html>
